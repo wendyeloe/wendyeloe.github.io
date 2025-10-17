@@ -73,6 +73,7 @@
 
       <div id="status" class="status" aria-live="polite"></div>
 
+      <div class="foot small">Tip: you can set the correct code via URL like <span class="code">?code=123</span>. Default is <span class="code" id="defaultCode"></span>.</div>
     </main>
   </div>
 
@@ -88,8 +89,8 @@
   <script>
     // --- Config ---
     const url = new URL(location.href);
-    let CORRECT = (url.searchParams.get('code') || '479').replace(/\D/g,'').slice(0,3);
-    if (CORRECT.length !== 3) CORRECT = '479';
+    let CORRECT = (url.searchParams.get('code') || '279').replace(/\D/g,'').slice(0,3);
+    if (CORRECT.length !== 3) CORRECT = '000';
     document.getElementById('defaultCode').textContent = CORRECT;
 
     const inputs = Array.from(document.querySelectorAll('.digit'));
