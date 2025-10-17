@@ -16,35 +16,26 @@
     .hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px}
     .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
     h1{margin:0;font-weight:800;letter-spacing:0.6px;font-size:clamp(22px, 3.5vw, 28px);}
-
-    /* glitchy subtitle */
     .sub{color:var(--muted);font-size:14px;margin:4px 0 16px}
     .glitch{position:relative;display:inline-block}
     .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;clip-path:inset(0 0 0 0);}
     .glitch::before{transform:translate(1px,0);color:var(--accent2);mix-blend-mode:screen;animation:gl 2s infinite linear}
     .glitch::after{transform:translate(-1px,0);color:var(--accent);mix-blend-mode:screen;animation:gl 1.8s infinite linear reverse}
     @keyframes gl{0%{clip-path:inset(0 0 85% 0)} 10%{clip-path:inset(0 0 10% 0)} 20%{clip-path:inset(80% 0 0 0)} 30%{clip-path:inset(10% 0 50% 0)} 40%{clip-path:inset(0 0 15% 0)} 50%{clip-path:inset(75% 0 0 0)} 60%{clip-path:inset(0 0 70% 0)} 70%{clip-path:inset(50% 0 20% 0)} 80%{clip-path:inset(10% 0 60% 0)} 90%{clip-path:inset(40% 0 5% 0)} 100%{clip-path:inset(0 0 80% 0)}}
-
     .codebox{display:flex;gap:12px;justify-content:center;margin:20px 0}
     .digit{width:64px;height:72px;border-radius:14px;border:1px solid #283548;background:#0f1520;color:var(--text);font-size:38px;text-align:center;font-weight:800;caret-color:transparent}
     .digit:focus{outline:2px solid var(--accent)}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid #2a3746;background:#121a27;color:var(--text);font-weight:700;cursor:pointer}
     .btn:hover{background:#162235}
     .btn:active{transform:translateY(1px)}
-
     .status{min-height:28px;margin-top:12px;color:var(--muted)}
     .status.ok{color:var(--ok)}
     .status.bad{color:var(--bad)}
-
     .foot{margin-top:16px;font-size:12px;color:var(--muted)}
     .small{font-size:12px;color:var(--muted)}
     .sr{position:absolute;left:-9999px}
-
-    /* shake */
     .shake{animation:shake .35s ease}
     @keyframes shake{10%{transform:translateX(-4px)} 20%{transform:translateX(4px)} 30%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 50%{transform:translateX(-2px)} 60%{transform:translateX(2px)} 70%{transform:translateX(-1px)} 80%{transform:translateX(1px)} 100%{transform:none}}
-
-    /* success overlay */
     .success{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;place-items:center}
     .success.show{display:grid}
     .card{background:#0e1621;border:1px solid #25405f;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:28px;max-width:560px;width:92vw;text-align:center}
@@ -72,7 +63,6 @@
       </form>
 
       <div id="status" class="status" aria-live="polite"></div>
-<div class="foot small"></div>
     </main>
   </div>
 
@@ -86,11 +76,8 @@
   </section>
 
   <script>
-    // --- Config ---
-    const url = new URL(location.href);
-    let CORRECT = (url.searchParams.get('code') || '279').replace(/\D/g,'').slice(0,3);
-    if (CORRECT.length !== 3) CORRECT = '000';
-    document.getElementById('defaultCode').textContent = CORRECT;
+    const CORRECT = '279';
+    document.getElementById('defaultCode')?.remove();
 
     const inputs = Array.from(document.querySelectorAll('.digit'));
     const form = document.getElementById('form');
@@ -101,7 +88,6 @@
 
     function joinCode(){ return inputs.map(i=>i.value||'').join(''); }
 
-    // auto-advance & backspace behavior
     inputs.forEach((inp, idx)=>{
       inp.addEventListener('input', e=>{
         const v = e.target.value.replace(/\D/g,'').slice(0,1);
@@ -113,7 +99,6 @@
       });
     });
 
-    // silly side-effect: are you having fun yet?
     function areYouHavingFun(y){
       if(y===true){ console.log('👏👏👏'); }
       else { console.log('Boo. Try harder.'); }
@@ -140,7 +125,6 @@
       }
     });
 
-    // focus first input on load
     inputs[0].focus();
   </script>
 </body>
