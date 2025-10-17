@@ -2,182 +2,138 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4 — Dot Matrix (Highlighted)</title>
+<title>G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4 — Dot Matrix Clean</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-  /* --- Print-friendly dot-matrix look (light ink) --- */
   @media print {
     @page { margin: 0.5in; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 
   :root{
-    --paper:#fbfbf4;        /* off-white */
-    --bar1:#f3f8ef;         /* pale green bar */
-    --bar2:#ffffff;         /* white */
-    --ink:#2b2b2b;          /* soft dark gray */
-    --ink-dim:#8a8a8a;      /* lighter for subtle items */
+    --paper:#fbfbf4;
+    --bar1:#f3f8ef;
+    --bar2:#ffffff;
+    --ink:#2b2b2b;
+    --ink-dim:#8a8a8a;
     --hole:#e2e2d8;
     --grid:#eaeae0;
-
-    /* IDE-ish colors (toned down for print) */
-    --kw:#5b7cfa;     /* keywords */
-    --str:#0c8b6e;    /* strings */
-    --num:#b25a00;    /* numbers */
-    --fn:#7a3dbd;     /* functions */
-    --var:#0a558c;    /* variables/idents */
-    --op:#6b6b6b;     /* operators */
-    --com:#7f8c8d;    /* comments */
   }
 
-  html,body{height:100%;}
-  body{
+  body {
     margin:0;
     background: var(--paper);
-    color: var(--ink);
     font: 14px "Courier Prime", "Courier New", Courier, monospace;
-    letter-spacing: .2px;
+    color: var(--ink);
   }
 
-  .page{
+  .page {
     max-width: 8.5in;
     margin: 0 auto;
     padding: 24px 18px 28px;
     position: relative;
     border: 1px solid var(--grid);
-    box-shadow: 0 6px 24px rgba(0,0,0,.06);
-    background:
-      repeating-linear-gradient(
-        0deg,
-        var(--bar1), var(--bar1) 28px,
-        var(--bar2) 28px, var(--bar2) 56px
-      );
+    background: repeating-linear-gradient(
+      0deg,
+      var(--bar1), var(--bar1) 28px,
+      var(--bar2) 28px, var(--bar2) 56px
+    );
+    box-shadow: 0 6px 24px rgba(0,0,0,.05);
   }
 
-  /* Tractor-feed holes */
-  .holes{ position:absolute; top:0; bottom:0; left:-18px; right:-18px; pointer-events:none; display:flex; justify-content:space-between; }
-  .holes::before, .holes::after{
-    content:""; width:10px; position:relative; background:transparent;
+  pre {
+    margin:0;
+    padding:14px;
+    border:1px dashed var(--grid);
+    background:rgba(255,255,255,.5);
+    line-height:1.4;
+    white-space:pre;
+    overflow:auto;
+    color:var(--ink);
+  }
+
+  /* pseudo IDE tone via hue filtering */
+  pre::selection { background:#cdecd1; color:#000; }
+
+  /* fake color filters for syntax impression */
+  pre { filter: contrast(1.05) saturate(0.8) hue-rotate(-5deg); }
+
+  /* subtle line numbers using a background image trick */
+  pre {
+    counter-reset: line;
     background-image:
-      radial-gradient(circle at 50% 10px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 50px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 90px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 130px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 170px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 210px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 250px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 290px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 330px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 370px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 410px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 450px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 490px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 530px, var(--hole) 5px, transparent 6px),
-      radial-gradient(circle at 50% 570px, var(--hole) 5px, transparent 6px);
-  }
-  .holes::before{ left:0; }
-  .holes::after{ right:0; }
-
-  .hdr{ display:flex; align-items:baseline; gap:10px; margin-bottom:10px; border-bottom:1px dashed var(--grid); padding-bottom:6px; }
-  .brand{ font-weight:700; letter-spacing:.5px }
-  .meta{ color:var(--ink-dim); font-size:12px }
-
-  pre{ margin:0; padding:12px 12px 12px 48px; background:rgba(255,255,255,.45); border:1px dashed var(--grid); color:var(--ink); line-height:1.35; position:relative; overflow:auto }
-  code{ white-space:pre; display:block; }
-
-  /* Subtle line numbers */
-  .ln{ counter-reset:line; }
-  .ln span{ display:block; counter-increment:line; position:relative; }
-  .ln span::before{
-    content: counter(line);
-    position:absolute; left:-34px; width:28px; text-align:right; color:var(--ink-dim); opacity:.35; font-size:12px; /* less noticeable */
+      linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.02) 50%);
+    background-size: 100% 28px;
   }
 
-  /* Syntax colors */
-  .kw{ color:var(--kw); font-weight:700 }
-  .str{ color:var(--str) }
-  .num{ color:var(--num) }
-  .fn{ color:var(--fn) }
-  .id{ color:var(--var) }
-  .op{ color:var(--op) }
-  .com{ color:var(--com); font-style:italic }
-
-  .ftr{ margin-top:10px; color:var(--ink-dim); font-size:12px; display:flex; gap:12px; flex-wrap:wrap }
-  .pill{ border:1px dashed var(--grid); padding:2px 8px }
+  /* page header/footer */
+  .hdr { font-weight:700; border-bottom:1px dashed var(--grid); padding-bottom:6px; margin-bottom:10px; }
+  .meta { font-size:12px; color:var(--ink-dim); margin-bottom:8px; }
+  .ftr { font-size:12px; color:var(--ink-dim); margin-top:10px; }
 </style>
 </head>
 <body>
   <div class="page">
-    <div class="holes" aria-hidden="true"></div>
+    <div class="hdr">G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4</div>
+    <div class="meta">RUN: FALL-2025 • NODE: DF-07 • OUTPUT: HARD COPY</div>
 
-    <div class="hdr">
-      <div class="brand">G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4</div>
-      <div class="meta">RUN: FALL-2025 • NODE: DF-07 • OUTPUT: HARD COPY</div>
-    </div>
+<pre><code># G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4
 
-    <pre><code class="ln">
-<span><span class="com"># G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4</span></span>
-<span></span>
-<span><span class="kw">import</span> <span class="id">deskcamA</span>.<span class="id">dat</span></span>
-<span><span class="kw">import</span> <span class="id">glitchGazetteFall2025</span></span>
-<span><span class="kw">from</span> <span class="id">glitch_tools</span> <span class="kw">import</span> <span class="id">translateInputToVariables</span></span>
-<span></span>
-<span><span class="id">you</span> <span class="op">=</span> <span class="str">"you"</span></span>
-<span><span class="id">foo</span> <span class="op">=</span> <span class="id">translateInputToVariables</span>(<span class="id">deskcamA</span>.<span class="id">dat</span>)</span>
-<span><span class="id">bar</span> <span class="op">=</span> <span class="id">translateInputToVariables</span>(<span class="id">glitchGazetteFall2025</span>)</span>
-<span></span>
-<span><span class="id">value</span> <span class="op">=</span> <span class="num">12</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">lunchTime</span> <span class="op">&lt;</span> <span class="str">"Noon"</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">9</span></span>
-<span><span class="kw">else</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">1</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">fiberZone</span> <span class="kw">is</span> <span class="str">"West"</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">*</span> <span class="num">2</span></span>
-<span><span class="kw">elif</span> <span class="id">foo</span>.<span class="id">fiberZone</span> <span class="kw">is</span> <span class="str">"North"</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">5</span></span>
-<span><span class="kw">else</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">/</span> <span class="num">3</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="id">bar</span>.<span class="id">promotedStrand</span> <span class="kw">is</span> <span class="num">24</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">4</span></span>
-<span><span class="kw">else</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">22</span></span>
-<span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="id">you</span>.<span class="id">HAVINGFUNYET</span> <span class="kw">is</span> <span class="kw">True</span><span class="op">:</span></span>
-<span>    <span class="id">print</span>(<span class="str">"*Clap Loudly*"</span>)</span>
-<span><span class="kw">else</span><span class="op">:</span></span>
-<span>    <span class="id">print</span> (<span class="str">"Booooooo!"</span>)</span>
-<span>        </span>
-<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">growth</span> <span class="kw">is</span> <span class="str">"linear"</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">1</span></span>
-<span><span class="kw">else</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">18</span></span>
-<span>   </span>
-<span><span class="kw">if</span> <span class="id">bar</span>.<span class="id">newCallPolicy</span> <span class="kw">is</span> <span class="str">"empathy"</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">*</span> <span class="num">3</span></span>
-<span><span class="kw">elif</span> <span class="id">bar</span>.<span class="id">newCallPolicy</span> <span class="kw">is</span> <span class="str">"understanding"</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">8</span></span>
-<span><span class="kw">else</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">7</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">totalSHOMSept</span> <span class="op">&gt;</span> <span class="num">1000</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">/</span> <span class="num">6</span></span>
-<span><span class="kw">elif</span> <span class="id">foo</span>.<span class="id">totalSHOMSept</span> <span class="op">&gt;</span> <span class="num">500</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">/</span> <span class="num">2</span></span>
-<span><span class="kw">else</span><span class="op">:</span></span>
-<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">10</span></span>
-<span></span>
-<span><span class="id">print</span>(<span class="str">"The Secret Third Digit is: "</span>, <span class="id">value</span>)</span>
-    </code></pre>
+import deskcamA.dat
+import glitchGazetteFall2025
+from glitch_tools import translateInputToVariables
 
-    <div class="ftr">
-      <span class="pill">GLITCH//DOT-MATRIX</span>
-      <span class="pill">TRACTOR-FEED ENABLED</span>
-      <span class="pill">COPY 001</span>
-    </div>
+you = "you"
+foo = translateInputToVariables(deskcamA.dat)
+bar = translateInputToVariables(glitchGazetteFall2025)
+
+value = 12
+
+if foo.lunchTime < "Noon":
+    value = value + 9
+else:
+    value = value - 1
+
+if foo.fiberZone is "West":
+    value = value * 2
+elif foo.fiberZone is "North":
+    value = value + 5
+else:
+    value = value / 3
+
+if bar.promotedStrand is 24:
+    value = value - 4
+else:
+    value = value + 22
+
+if you.HAVINGFUNYET is True:
+    print("*Clap Loudly*")
+else:
+    print("Booooooo!")
+
+if foo.growth is "linear":
+    value = value + 1
+else:
+    value = value - 18
+
+if bar.newCallPolicy is "empathy":
+    value = value * 3
+elif bar.newCallPolicy is "understanding":
+    value = value + 8
+else:
+    value = value + 7
+
+if foo.totalSHOMSept > 1000:
+    value = value / 6
+elif foo.totalSHOMSept > 500:
+    value = value / 2
+else:
+    value = value - 10
+
+print("The Secret Third Digit is: ", value)
+</code></pre>
+
+    <div class="ftr">GLITCH//DOT-MATRIX • TRACTOR-FEED ENABLED • COPY 001</div>
   </div>
 </body>
 </html>
