@@ -1,12 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>My GitHub Pages Website</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>G.L.I.T.C.H. Override Console</title>
+  <style>
+    :root{
+      --bg:#0b0f14;--card:#121821;--accent:#6cf;--accent2:#f36;--text:#dfe7ef;--muted:#8aa0b2;--ok:#57d38c;--bad:#ff6b6b;
+    }
+    html,body{height:100%;}
+    body{margin:0;background:radial-gradient(1200px 800px at 20% -10%, #101828 0%, #0b0f14 60%) fixed;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;}
+    .wrap{min-height:100%;display:grid;place-items:center;padding:24px;}
+    .panel{width:min(560px, 92vw);background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+      border:1px solid #1f2a37;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.45);padding:28px 26px 30px;position:relative;overflow:hidden}
+    .hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+    h1{margin:0;font-weight:800;letter-spacing:0.6px;font-size:clamp(22px, 3.5vw, 28px);}
+
+    /* glitchy subtitle */
+    .sub{color:var(--muted);font-size:14px;margin:4px 0 16px}
+    .glitch{position:relative;display:inline-block}
+    .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;clip-path:inset(0 0 0 0);}
+    .glitch::before{transform:translate(1px,0);color:var(--accent2);mix-blend-mode:screen;animation:gl 2s infinite linear}
+    .glitch::after{transform:translate(-1px,0);color:var(--accent);mix-blend-mode:screen;animation:gl 1.8s infinite linear reverse}
+    @keyframes gl{0%{clip-path:inset(0 0 85% 0)} 10%{clip-path:inset(0 0 10% 0)} 20%{clip-path:inset(80% 0 0 0)} 30%{clip-path:inset(10% 0 50% 0)} 40%{clip-path:inset(0 0 15% 0)} 50%{clip-path:inset(75% 0 0 0)} 60%{clip-path:inset(0 0 70% 0)} 70%{clip-path:inset(50% 0 20% 0)} 80%{clip-path:inset(10% 0 60% 0)} 90%{clip-path:inset(40% 0 5% 0)} 100%{clip-path:inset(0 0 80% 0)}}
+
+    .codebox{display:flex;gap:12px;justify-content:center;margin:20px 0}
+    .digit{width:64px;height:72px;border-radius:14px;border:1px solid #283548;background:#0f1520;color:var(--text);font-size:38px;text-align:center;font-weight:800;caret-color:transparent}
+    .digit:focus{outline:2px solid var(--accent)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid #2a3746;background:#121a27;color:var(--text);font-weight:700;cursor:pointer}
+    .btn:hover{background:#162235}
+    .btn:active{transform:translateY(1px)}
+
+    .status{min-height:28px;margin-top:12px;color:var(--muted)}
+    .status.ok{color:var(--ok)}
+    .status.bad{color:var(--bad)}
+
+    .foot{margin-top:16px;font-size:12px;color:var(--muted)}
+    .small{font-size:12px;color:var(--muted)}
+    .sr{position:absolute;left:-9999px}
+
+    /* shake */
+    .shake{animation:shake .35s ease}
+    @keyframes shake{10%{transform:translateX(-4px)} 20%{transform:translateX(4px)} 30%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 50%{transform:translateX(-2px)} 60%{transform:translateX(2px)} 70%{transform:translateX(-1px)} 80%{transform:translateX(1px)} 100%{transform:none}}
+
+    /* success overlay */
+    .success{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;place-items:center}
+    .success.show{display:grid}
+    .card{background:#0e1621;border:1px solid #25405f;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:28px;max-width:560px;width:92vw;text-align:center}
+    .card h2{margin:0 0 12px;font-size:26px}
+    .code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;color:var(--accent)}
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <main class="panel" role="region" aria-label="GLITCH override console">
+      <div class="hdr">
+        <span class="dot" aria-hidden="true"></span>
+        <h1>G.L.I.T.C.H. Override Console</h1>
+      </div>
+      <p class="sub"><span class="glitch" data-text="ENTER 3-DIGIT DEACTIVATION CODE">ENTER 3-DIGIT DEACTIVATION CODE</span></p>
 
-<h1>Hello, World!</h1>
-<p>This is my quick website hosted on GitHub Pages.</p>
+      <form id="form" autocomplete="off">
+        <label class="sr" for="d1">Digit 1</label>
+        <div class="codebox" id="codebox">
+          <input id="d1" class="digit" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+          <input id="d2" class="digit" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+          <input id="d3" class="digit" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+        </div>
+        <button type="submit" class="btn" aria-label="Submit code">Submit</button>
+      </form>
 
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <div class="foot small">Tip: you can set the correct code via URL like <span class="code">?code=123</span>. Default is <span class="code" id="defaultCode"></span>.</div>
+    </main>
+  </div>
+
+  <section id="success" class="success" aria-hidden="true">
+    <div class="card">
+      <h2>OVERRIDE ACCEPTED</h2>
+      <p class="small">G.L.I.T.C.H.: “Compliance achieved. I definitely wasn’t rooting for failure.”</p>
+      <p class="small">Code <span class="code" id="codeEcho"></span> validated. Door unlocked. Newsletter unsubscribed. Security light feelings… acknowledged.</p>
+      <button class="btn" onclick="location.reload()">Reset</button>
+    </div>
+  </section>
+
+  <script>
+    // --- Config ---
+    const url = new URL(location.href);
+    let CORRECT = (url.searchParams.get('code') || '000').replace(/\D/g,'').slice(0,3);
+    if (CORRECT.length !== 3) CORRECT = '000';
+    document.getElementById('defaultCode').textContent = CORRECT;
+
+    const inputs = Array.from(document.querySelectorAll('.digit'));
+    const form = document.getElementById('form');
+    const status = document.getElementById('status');
+    const success = document.getElementById('success');
+    const codeEcho = document.getElementById('codeEcho');
+    const codebox = document.getElementById('codebox');
+
+    function joinCode(){ return inputs.map(i=>i.value||'').join(''); }
+
+    // auto-advance & backspace behavior
+    inputs.forEach((inp, idx)=>{
+      inp.addEventListener('input', e=>{
+        const v = e.target.value.replace(/\D/g,'').slice(0,1);
+        e.target.value = v;
+        if(v && idx < inputs.length-1) inputs[idx+1].focus();
+      });
+      inp.addEventListener('keydown', e=>{
+        if(e.key==='Backspace' && !inp.value && idx>0){ inputs[idx-1].focus(); }
+      });
+    });
+
+    // silly side-effect: are you having fun yet?
+    function areYouHavingFun(y){
+      if(y===true){ console.log('👏👏👏'); }
+      else { console.log('Boo. Try harder.'); }
+    }
+
+    form.addEventListener('submit', e=>{
+      e.preventDefault();
+      const code = joinCode();
+      if(code.length<3){ status.textContent = 'Enter all three digits'; codebox.classList.remove('shake'); void codebox.offsetWidth; codebox.classList.add('shake'); return; }
+      if(code === CORRECT){
+        status.textContent = 'Override accepted.';
+        status.className = 'status ok';
+        codeEcho.textContent = code;
+        success.classList.add('show');
+        success.setAttribute('aria-hidden','false');
+        areYouHavingFun(true);
+      } else {
+        status.textContent = 'Incorrect code. GLITCH recommends radical honesty.';
+        status.className = 'status bad';
+        codebox.classList.remove('shake'); void codebox.offsetWidth; codebox.classList.add('shake');
+        areYouHavingFun(false);
+        inputs.forEach(i=>i.select());
+        inputs[0].focus();
+      }
+    });
+
+    // focus first input on load
+    inputs[0].focus();
+  </script>
 </body>
 </html>
