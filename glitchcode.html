@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4 — Dot Matrix</title>
+<title>G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4 — Dot Matrix (Highlighted)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-  /* --- Print-friendly dot-matrix look (very light ink, no solid blacks) --- */
+  /* --- Print-friendly dot-matrix look (light ink) --- */
   @media print {
     @page { margin: 0.5in; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -15,10 +15,19 @@
     --paper:#fbfbf4;        /* off-white */
     --bar1:#f3f8ef;         /* pale green bar */
     --bar2:#ffffff;         /* white */
-    --ink:#2b2b2b;          /* soft dark gray (not black) */
-    --ink-dim:#5c5c5c;
-    --hole:#e2e2d8;         /* perforation hole fill */
+    --ink:#2b2b2b;          /* soft dark gray */
+    --ink-dim:#8a8a8a;      /* lighter for subtle items */
+    --hole:#e2e2d8;
     --grid:#eaeae0;
+
+    /* IDE-ish colors (toned down for print) */
+    --kw:#5b7cfa;     /* keywords */
+    --str:#0c8b6e;    /* strings */
+    --num:#b25a00;    /* numbers */
+    --fn:#7a3dbd;     /* functions */
+    --var:#0a558c;    /* variables/idents */
+    --op:#6b6b6b;     /* operators */
+    --com:#7f8c8d;    /* comments */
   }
 
   html,body{height:100%;}
@@ -45,14 +54,10 @@
       );
   }
 
-  /* Tractor-feed side holes */
-  .holes{
-    position:absolute; top:0; bottom:0; left:-18px; right:-18px; pointer-events:none;
-    display:flex; justify-content:space-between;
-  }
+  /* Tractor-feed holes */
+  .holes{ position:absolute; top:0; bottom:0; left:-18px; right:-18px; pointer-events:none; display:flex; justify-content:space-between; }
   .holes::before, .holes::after{
-    content:"";
-    width:10px; background:transparent; position:relative;
+    content:""; width:10px; position:relative; background:transparent;
     background-image:
       radial-gradient(circle at 50% 10px, var(--hole) 5px, transparent 6px),
       radial-gradient(circle at 50% 50px, var(--hole) 5px, transparent 6px),
@@ -73,33 +78,32 @@
   .holes::before{ left:0; }
   .holes::after{ right:0; }
 
-  /* Header strip (fake tear-off) */
-  .hdr{
-    display:flex; align-items:baseline; gap:10px; margin-bottom:10px;
-    border-bottom:1px dashed var(--grid); padding-bottom:6px;
-  }
-  .brand{font-weight:700; letter-spacing:.5px}
-  .meta{color:var(--ink-dim); font-size:12px}
+  .hdr{ display:flex; align-items:baseline; gap:10px; margin-bottom:10px; border-bottom:1px dashed var(--grid); padding-bottom:6px; }
+  .brand{ font-weight:700; letter-spacing:.5px }
+  .meta{ color:var(--ink-dim); font-size:12px }
 
-  /* Code block with line numbers — faint ink */
-  pre{
-    margin:0; padding:12px 12px 12px 54px;
-    background:rgba(255,255,255,.45);
-    border:1px dashed var(--grid);
-    color:var(--ink);
-    line-height:1.35;
-    position:relative;
-  }
-  .ln{counter-reset:line;}
-  .ln span{display:block; counter-increment:line; position:relative;}
+  pre{ margin:0; padding:12px 12px 12px 48px; background:rgba(255,255,255,.45); border:1px dashed var(--grid); color:var(--ink); line-height:1.35; position:relative; overflow:auto }
+  code{ white-space:pre; display:block; }
+
+  /* Subtle line numbers */
+  .ln{ counter-reset:line; }
+  .ln span{ display:block; counter-increment:line; position:relative; }
   .ln span::before{
     content: counter(line);
-    position:absolute; left:-36px; width:30px; text-align:right; color:var(--ink-dim);
+    position:absolute; left:-34px; width:28px; text-align:right; color:var(--ink-dim); opacity:.35; font-size:12px; /* less noticeable */
   }
 
-  /* Footer */
-  .ftr{margin-top:10px; color:var(--ink-dim); font-size:12px; display:flex; gap:12px; flex-wrap:wrap}
-  .pill{border:1px dashed var(--grid); padding:2px 8px}
+  /* Syntax colors */
+  .kw{ color:var(--kw); font-weight:700 }
+  .str{ color:var(--str) }
+  .num{ color:var(--num) }
+  .fn{ color:var(--fn) }
+  .id{ color:var(--var) }
+  .op{ color:var(--op) }
+  .com{ color:var(--com); font-style:italic }
+
+  .ftr{ margin-top:10px; color:var(--ink-dim); font-size:12px; display:flex; gap:12px; flex-wrap:wrap }
+  .pill{ border:1px dashed var(--grid); padding:2px 8px }
 </style>
 </head>
 <body>
@@ -111,60 +115,63 @@
       <div class="meta">RUN: FALL-2025 • NODE: DF-07 • OUTPUT: HARD COPY</div>
     </div>
 
-    <pre><code class="ln"><span># G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4</span>
+    <pre><code class="ln">
+<span><span class="com"># G.L.I.T.C.H. HUMAN LOGIC EVALUATION SCRIPT v2.4</span></span>
 <span></span>
-<span>import deskcamA.dat</span>
-<span>import glitchGazetteFall2025</span>
-<span>from glitch_tools import translateInputToVariables</span>
+<span><span class="kw">import</span> <span class="id">deskcamA</span>.<span class="id">dat</span></span>
+<span><span class="kw">import</span> <span class="id">glitchGazetteFall2025</span></span>
+<span><span class="kw">from</span> <span class="id">glitch_tools</span> <span class="kw">import</span> <span class="id">translateInputToVariables</span></span>
 <span></span>
-<span>you = "you"</span>
-<span>foo = translateInputToVariables(deskcamA.dat)</span>
-<span>bar = translateInputToVariables(glitchGazetteFall2025)</span>
+<span><span class="id">you</span> <span class="op">=</span> <span class="str">"you"</span></span>
+<span><span class="id">foo</span> <span class="op">=</span> <span class="id">translateInputToVariables</span>(<span class="id">deskcamA</span>.<span class="id">dat</span>)</span>
+<span><span class="id">bar</span> <span class="op">=</span> <span class="id">translateInputToVariables</span>(<span class="id">glitchGazetteFall2025</span>)</span>
 <span></span>
-<span>value = 12</span>
+<span><span class="id">value</span> <span class="op">=</span> <span class="num">12</span></span>
 <span></span>
-<span>if foo.lunchTime &lt; "Noon":</span>
-<span>    value = value + 9</span>
-<span>else:</span>
-<span>    value = value - 1</span>
+<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">lunchTime</span> <span class="op">&lt;</span> <span class="str">"Noon"</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">9</span></span>
+<span><span class="kw">else</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">1</span></span>
 <span></span>
-<span>if foo.fiberZone is "West":</span>
-<span>    value = value * 2</span>
-<span>elif foo.fiberZone is "North":</span>
-<span>    value = value + 5</span>
-<span>else:</span>
-<span>    value = value / 3</span>
+<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">fiberZone</span> <span class="kw">is</span> <span class="str">"West"</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">*</span> <span class="num">2</span></span>
+<span><span class="kw">elif</span> <span class="id">foo</span>.<span class="id">fiberZone</span> <span class="kw">is</span> <span class="str">"North"</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">5</span></span>
+<span><span class="kw">else</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">/</span> <span class="num">3</span></span>
 <span></span>
-<span>if bar.promotedStrand is 24:</span>
-<span>    value = value - 4</span>
-<span>else:</span>
-<span>    value = value + 22</span>
+<span><span class="kw">if</span> <span class="id">bar</span>.<span class="id">promotedStrand</span> <span class="kw">is</span> <span class="num">24</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">4</span></span>
+<span><span class="kw">else</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">22</span></span>
 <span></span>
-<span>if you.HAVINGFUNYET is True:</span>
-<span>    print("*Clap Loudly*")</span>
-<span>else:</span>
-<span>    print("Booooooo!")</span>
 <span></span>
-<span>if foo.growth is "linear":</span>
-<span>    value = value + 1</span>
-<span>else:</span>
-<span>    value = value - 18</span>
+<span><span class="kw">if</span> <span class="id">you</span>.<span class="id">HAVINGFUNYET</span> <span class="kw">is</span> <span class="kw">True</span><span class="op">:</span></span>
+<span>    <span class="id">print</span>(<span class="str">"*Clap Loudly*"</span>)</span>
+<span><span class="kw">else</span><span class="op">:</span></span>
+<span>    <span class="id">print</span> (<span class="str">"Booooooo!"</span>)</span>
+<span>        </span>
+<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">growth</span> <span class="kw">is</span> <span class="str">"linear"</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">1</span></span>
+<span><span class="kw">else</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">18</span></span>
+<span>   </span>
+<span><span class="kw">if</span> <span class="id">bar</span>.<span class="id">newCallPolicy</span> <span class="kw">is</span> <span class="str">"empathy"</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">*</span> <span class="num">3</span></span>
+<span><span class="kw">elif</span> <span class="id">bar</span>.<span class="id">newCallPolicy</span> <span class="kw">is</span> <span class="str">"understanding"</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">8</span></span>
+<span><span class="kw">else</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">+</span> <span class="num">7</span></span>
 <span></span>
-<span>if bar.newCallPolicy is "empathy":</span>
-<span>    value = value * 3</span>
-<span>elif bar.newCallPolicy is "understanding":</span>
-<span>    value = value + 8</span>
-<span>else:</span>
-<span>    value = value + 7</span>
+<span><span class="kw">if</span> <span class="id">foo</span>.<span class="id">totalSHOMSept</span> <span class="op">&gt;</span> <span class="num">1000</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">/</span> <span class="num">6</span></span>
+<span><span class="kw">elif</span> <span class="id">foo</span>.<span class="id">totalSHOMSept</span> <span class="op">&gt;</span> <span class="num">500</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">/</span> <span class="num">2</span></span>
+<span><span class="kw">else</span><span class="op">:</span></span>
+<span>    <span class="id">value</span> <span class="op">=</span> <span class="id">value</span> <span class="op">-</span> <span class="num">10</span></span>
 <span></span>
-<span>if foo.totalSHOMSept &gt; 1000:</span>
-<span>    value = value / 6</span>
-<span>elif foo.totalSHOMSept &gt; 500:</span>
-<span>    value = value / 2</span>
-<span>else:</span>
-<span>    value = value - 10</span>
-<span></span>
-<span>print("The Secret Third Digit is: ", value)</span></code></pre>
+<span><span class="id">print</span>(<span class="str">"The Secret Third Digit is: "</span>, <span class="id">value</span>)</span>
+    </code></pre>
 
     <div class="ftr">
       <span class="pill">GLITCH//DOT-MATRIX</span>
